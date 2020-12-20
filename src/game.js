@@ -5,6 +5,8 @@ window.addEventListener("load", () => {
 });
 
 function initialize() {
+    // 画像を準備する
+    PuyoImage.initialize();
     // ステージを準備する
     Stage.initialize();
 }
