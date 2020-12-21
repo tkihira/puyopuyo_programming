@@ -8,3 +8,5 @@ Config.stageCols = 6; // ステージの横の個数
 Config.stageRows = 12; // ステージの縦の個数
 Config.stageBackgroundColor = '#11213b'; // ステージの背景色
 Config.scoreBackgroundColor = '#24c0bb'; // スコアの背景色
+
+Config.freeFallingSpeed = 6; // 自由落下のスピード

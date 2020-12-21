@@ -2,11 +2,45 @@
 window.addEventListener("load", () => {
     // まずステージを整える
     initialize();
+
+    // ゲームを開始する
+    loop();
 });
+
+let mode; // ゲームの現在の状況
+let frame; // ゲームの現在フレーム（1/60秒ごとに1追加される）
 
 function initialize() {
     // 画像を準備する
     PuyoImage.initialize();
     // ステージを準備する
     Stage.initialize();
+    // シーンを初期状態にセットする
+    mode = 'start';
+    // フレームを初期化する
+    frame = 0;
+}
+
+function loop() {
+    switch(mode) {
+        case 'start':
+            // 最初は、もしかしたら空中にあるかもしれないぷよを自由落下させるところからスタート
+            mode = 'checkFall';
+            break;
+        case 'checkFall':
+            // 落ちるかどうか判定する
+            if(Stage.checkFall()) {
+                mode = 'fall'
+            } else {
+                mode = '';
+            }
+            break;
+        case 'fall':
+            if(!Stage.fall()) {
+                mode = '';
+            }
+            break;
+    }
+    frame++;
+    requestAnimationFrame(loop); // 1/60秒後にもう一度呼び出す
 }
