@@ -1,5 +1,6 @@
 class Stage {
     // static stageElement;
+    // static zenkeshiImage;
     // static board;
     // static puyoCount;
     // static fallingPuyoList = [];
@@ -14,20 +15,26 @@ class Stage {
         stageElement.style.backgroundColor = Config.stageBackgroundColor;
         this.stageElement = stageElement;
         
+        const zenkeshiImage = document.getElementById("zenkeshi");
+        zenkeshiImage.width = Config.puyoImgWidth * 6;
+        zenkeshiImage.style.position = 'absolute';
+        zenkeshiImage.style.display = 'none';        
+        this.zenkeshiImage = zenkeshiImage;
+        stageElement.appendChild(zenkeshiImage);
+
         // メモリを準備する
         this.board = [
-            [0, 1, 2, 3, 4, 5],
+            [0, 0, 0, 0, 4, 5],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 1, 2, 3, 0, 0],
             [1, 2, 3, 4, 5, 0],
-            [2, 3, 4, 5, 0, 1],
-            [0, 0, 0, 0, 0, 0],
-            [0, 1, 1, 1, 2, 0],
-            [0, 4, 5, 5, 2, 0],
-            [0, 4, 5, 5, 2, 0],
-            [0, 4, 3, 3, 3, 0],
-            [0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 0, 2, 2],
-            [0, 0, 3, 3, 0, 0],
-            [4, 4, 0, 0, 5, 5],
+            [1, 2, 3, 4, 5, 0],
+            [1, 2, 3, 4, 5, 0],
         ];
         let puyoCount = 0;
         for(let y = 0; y < Config.stageRows; y++) {
@@ -241,6 +248,36 @@ class Stage {
         }
     }
 
+    static showZenkeshi() {
+        // 全消しを表示する
+        this.zenkeshiImage.style.display = 'block';
+        this.zenkeshiImage.style.opacity = '1';
+        const startTime = Date.now();
+        const startTop = Config.puyoImgHeight * Config.stageRows;
+        const endTop = Config.puyoImgHeight * Config.stageRows / 3;
+        const animation = () => {
+            const ratio = Math.min((Date.now() - startTime) / Config.zenkeshiDuration, 1);
+            this.zenkeshiImage.style.top = (endTop - startTop) * ratio + startTop + 'px';
+            if(ratio !== 1) {
+                requestAnimationFrame(animation);
+            }
+        };
+        animation();
+    }
+    static hideZenkeshi() {
+        // 全消しを消去する
+        const startTime = Date.now();
+        const animation = () => {
+            const ratio = Math.min((Date.now() - startTime) / Config.zenkeshiDuration, 1);
+            this.zenkeshiImage.style.opacity = String(1 - ratio);
+            if(ratio !== 1) {
+                requestAnimationFrame(animation);
+            } else {
+                this.zenkeshiImage.style.display = 'none';
+            }
+        };
+        animation();
+    }
 }
 Stage.fallingPuyoList = [];
 Stage.erasingPuyoInfoList = [];

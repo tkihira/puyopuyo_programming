@@ -13,3 +13,4 @@ Config.freeFallingSpeed = 6; // 自由落下のスピード
 Config.erasePuyoCount = 4; // 何個以上揃ったら消えるか
 Config.eraseAnimationDuration = 30; // 何フレームでぷよを消すか
 
+Config.zenkeshiDuration = 150; // 全消し時のアニメーションミリセカンド

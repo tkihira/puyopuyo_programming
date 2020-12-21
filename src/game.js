@@ -49,7 +49,12 @@ function loop() {
                 if(eraseInfo) {
                     mode = 'erasing';
                     combinationCount++;
+                    Stage.hideZenkeshi();
                 } else {
+                    if(Stage.puyoCount === 0 && combinationCount > 0) {
+                        // 全消しの処理をする
+                        Stage.showZenkeshi();
+                    }
                     combinationCount = 0;
                     mode = ''
                 }
