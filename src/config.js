@@ -17,5 +17,6 @@ Config.puyoColors = 5; // 何色のぷよを使うか
 Config.playerFallingSpeed = 0.9; // プレイ中の自然落下のスピード
 Config.playerDownSpeed = 10; // プレイ中の下キー押下時の落下スピード
 Config.playerGroundFrame = 20; // 何フレーム接地したらぷよを固定するか
+Config.playerMoveFrame = 10; // 左右移動に消費するフレーム数
 
 Config.zenkeshiDuration = 150; // 全消し時のアニメーションミリセカンド

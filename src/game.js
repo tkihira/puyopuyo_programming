@@ -82,6 +82,12 @@ function loop() {
             const action = Player.playing(frame);
             mode = action; // 'playing' 'moving' 'rotating' 'fix' のどれかが帰ってくる
             break;
+        case 'moving':
+            if(!Player.moving(frame)) {
+                // 移動が終わったので操作可能にする
+                mode = 'playing';
+            }
+            break;
         case 'fix':
             // 現在の位置でぷよを固定する
             Player.fix();

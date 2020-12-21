@@ -6,8 +6,55 @@ class Player {
     // static movablePuyoElement;
 
     // static groundFrame;
+    // static keyStatus;
+
+    // static actionStartFrame;
+    // static moveSource;
+    // static moveDestination;
 
     static initialize () {
+        // キーボードの入力を確認する
+        this.keyStatus = {
+            right: false,
+            left: false,
+            up: false,
+            down: false
+        };
+        // ブラウザのキーボードの入力を取得するイベントリスナを登録する
+        document.addEventListener('keydown', (e) => {
+            // キーボードが押された場合
+            switch(e.keyCode) {
+                case 37: // 左向きキー
+                    this.keyStatus.left = true;
+                    e.preventDefault(); return false;
+                case 38: // 上向きキー
+                    this.keyStatus.up = true;
+                    e.preventDefault(); return false;
+                case 39: // 右向きキー
+                    this.keyStatus.right = true;
+                    e.preventDefault(); return false;
+                case 40: // 下向きキー
+                    this.keyStatus.down = true;
+                    e.preventDefault(); return false;
+            }
+        });
+        document.addEventListener('keyup', (e) => {
+            // キーボードが離された場合
+            switch(e.keyCode) {
+                case 37: // 左向きキー
+                    this.keyStatus.left = false;
+                    e.preventDefault(); return false;
+                case 38: // 上向きキー
+                    this.keyStatus.up = false;
+                    e.preventDefault(); return false;
+                case 39: // 右向きキー
+                    this.keyStatus.right = false;
+                    e.preventDefault(); return false;
+                case 40: // 下向きキー
+                    this.keyStatus.down = false;
+                    e.preventDefault(); return false;
+            }
+        });
     }
 
     static createNewPuyo () {
@@ -110,15 +157,69 @@ class Player {
     static playing(frame) {
         // まず自由落下を確認する
         // 下キーが押されていた場合、それ込みで自由落下させる
-        if(this.falling(false)) {
+        if(this.falling(this.keyStatus.down)) {
             // 落下が終わっていたら、ぷよを固定する
             this.setPuyoPosition();
             return 'fix';
         }
         this.setPuyoPosition();
+        if(this.keyStatus.right || this.keyStatus.left) {
+            // 左右のの確認をする
+            const cx = (this.keyStatus.right) ? 1 : -1;
+            const x = this.puyoStatus.x;
+            const y = this.puyoStatus.y;
+            const mx = x + this.puyoStatus.dx;
+            const my = y + this.puyoStatus.dy;
+            // その方向にブロックがないことを確認する
+            // まずは自分の左右を確認
+            let canMove = true;
+            if(y < 0 || x + cx < 0 || x + cx >= Config.stageCols || Stage.board[y][x + cx]) {
+                if(y >= 0) {
+                    canMove = false;
+                }
+            }
+            if(my < 0 || mx + cx < 0 || mx + cx >= Config.stageCols || Stage.board[my][mx + cx]) {
+                if(my >= 0) {
+                    canMove = false;
+                }
+            }
+            // 接地していない場合は、さらに1個下のブロックの左右も確認する
+            if(this.groundFrame === 0) {
+                if(y + 1 < 0 || x + cx < 0 || x + cx >= Config.stageCols || Stage.board[y + 1][x + cx]) {
+                    if(y + 1 >= 0) {
+                        canMove = false;
+                    }
+                }
+                if(my + 1 < 0 || mx + cx < 0 || mx + cx >= Config.stageCols || Stage.board[my + 1][mx + cx]) {
+                    if(my + 1 >= 0) {
+                        canMove = false;
+                    }
+                }
+            }
+
+            if(canMove) {         
+                // 動かすことが出来るので、移動先情報をセットして移動状態にする       
+                this.actionStartFrame = frame;
+                this.moveSource = x * Config.puyoImgWidth;
+                this.moveDestination = (x + cx) * Config.puyoImgWidth;
+                this.puyoStatus.x += cx;
+                return 'moving';
+            }
+        }
         return 'playing';
     }
 
+    static moving(frame) {
+        // 移動中も自然落下はさせる
+        this.falling();
+        const ratio = Math.min(1, (frame - this.actionStartFrame) / Config.playerMoveFrame);
+        this.puyoStatus.left = ratio * (this.moveDestination - this.moveSource) + this.moveSource;
+        this.setPuyoPosition();
+        if(ratio === 1) {
+            return false;
+        }
+        return true;
+    }
     static fix() {
         // 現在のぷよをステージ上に配置する
         const x = this.puyoStatus.x;
