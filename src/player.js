@@ -55,6 +55,76 @@ class Player {
                     e.preventDefault(); return false;
             }
         });
+        // タッチ操作追加
+        this.touchPoint = {
+            xs: 0,
+            ys: 0,
+            xe: 0,
+            ye: 0
+        };
+        document.addEventListener('touchstart', (e) => {
+            this.touchPoint.xs = e.touches[0].clientX;
+            this.touchPoint.ys = e.touches[0].clientY;
+        });
+        document.addEventListener('touchmove', (e) => {
+            // 指が少し動いた時は無視
+            if (Math.abs(e.touches[0].clientX - this.touchPoint.xs) < 20 &&
+                Math.abs(e.touches[0].clientY - this.touchPoint.ys) < 20
+            ) {
+                return;
+            }
+            // 指の動きをからジェスチャーによるkeyStatusプロパティを更新
+            this.touchPoint.xe = e.touches[0].clientX;
+            this.touchPoint.ye = e.touches[0].clientY;
+            const {xs, ys, xe, ye} = this.touchPoint;
+            gesture(xs, ys, xe, ye);
+
+            this.touchPoint.xs = this.touchPoint.xe;
+            this.touchPoint.ys = this.touchPoint.ye;
+        });
+        document.addEventListener('touchend', (e) => {
+            this.keyStatus.up = false;
+            this.keyStatus.down = false;
+            this.keyStatus.left = false;
+            this.keyStatus.right = false;
+        });
+
+        // ジェスチャーを判定して、keyStatusプロパティを更新する関数
+        const gesture = (xs, ys, xe, ye) => {
+            const horizonDirection = xe - xs;
+            const verticalDirection = ye - ys;
+            if (Math.abs(horizonDirection) < Math.abs(verticalDirection)) {
+                // 縦方向
+                if (verticalDirection < 0) {
+                    // up
+                    this.keyStatus.up = true;
+                    this.keyStatus.down = false;
+                    this.keyStatus.left = false;
+                    this.keyStatus.right = false;
+                } else if (0 <= verticalDirection) {
+                    // down
+                    this.keyStatus.up = false;
+                    this.keyStatus.down = true;
+                    this.keyStatus.left = false;
+                    this.keyStatus.right = false;
+                }
+            } else {
+                // 横方向
+                if (horizonDirection < 0) {
+                    // left
+                    this.keyStatus.up = false;
+                    this.keyStatus.down = false;
+                    this.keyStatus.left = true;
+                    this.keyStatus.right = false;
+                } else if (0 <= horizonDirection) {
+                    // right
+                    this.keyStatus.up = false;
+                    this.keyStatus.down = false;
+                    this.keyStatus.left = false;
+                    this.keyStatus.right = true;
+                }
+            }
+        }
     }
 
     static createNewPuyo () {
