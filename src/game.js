@@ -88,6 +88,12 @@ function loop() {
                 mode = 'playing';
             }
             break;
+        case 'rotating':
+            if(!Player.rotating(frame)) {
+                // 回転が終わったので操作可能にする
+                mode = 'playing';
+            }
+            break;
         case 'fix':
             // 現在の位置でぷよを固定する
             Player.fix();
