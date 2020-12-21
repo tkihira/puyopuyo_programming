@@ -9,6 +9,7 @@ window.addEventListener("load", () => {
 
 let mode; // ゲームの現在の状況
 let frame; // ゲームの現在フレーム（1/60秒ごとに1追加される）
+let combinationCount = 0; // 何連鎖かどうか
 
 function initialize() {
     // 画像を準備する
@@ -32,15 +33,34 @@ function loop() {
             if(Stage.checkFall()) {
                 mode = 'fall'
             } else {
-                mode = '';
+                // 落ちないならば、ぷよを消せるかどうか判定する
+                mode = 'checkErase';
             }
             break;
         case 'fall':
             if(!Stage.fall()) {
-                mode = '';
+                // すべて落ちきったら、ぷよを消せるかどうか判定する
+                mode = 'checkErase';
             }
             break;
-    }
+            case 'checkErase':
+                // 消せるかどうか判定する
+                const eraseInfo = Stage.checkErase(frame);
+                if(eraseInfo) {
+                    mode = 'erasing';
+                    combinationCount++;
+                } else {
+                    combinationCount = 0;
+                    mode = ''
+                }
+                break;
+            case 'erasing':
+                if(!Stage.erasing(frame)) {
+                    // 消し終わったら、再度落ちるかどうか判定する
+                    mode = 'checkFall';
+                }
+                break;
+        }
     frame++;
     requestAnimationFrame(loop); // 1/60秒後にもう一度呼び出す
 }
