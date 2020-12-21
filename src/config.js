@@ -4,6 +4,8 @@ class Config {
 Config.puyoImgWidth = 40; // ぷよぷよ画像の幅
 Config.puyoImgHeight = 40; // ぷよぷよ画像の高さ
 
+Config.fontHeight = 33;
+
 Config.stageCols = 6; // ステージの横の個数
 Config.stageRows = 12; // ステージの縦の個数
 Config.stageBackgroundColor = '#11213b'; // ステージの背景色
@@ -21,3 +23,4 @@ Config.playerMoveFrame = 10; // 左右移動に消費するフレーム数
 Config.playerRotateFrame = 10; // 回転に消費するフレーム数
 
 Config.zenkeshiDuration = 150; // 全消し時のアニメーションミリセカンド
+Config.gameOverFrame = 3000; // ゲームオーバー演出のサイクルフレーム

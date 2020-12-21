@@ -18,6 +18,8 @@ function initialize() {
     Player.initialize();
     // ステージを準備する
     Stage.initialize();
+    // スコア表示の準備をする
+    Score.initialize();
     // シーンを初期状態にセットする
     mode = 'start';
     // フレームを初期化する
@@ -51,11 +53,14 @@ function loop() {
             if(eraseInfo) {
                 mode = 'erasing';
                 combinationCount++;
+                // 得点を計算する
+                Score.calculateScore(combinationCount, eraseInfo.piece, eraseInfo.color);
                 Stage.hideZenkeshi();
             } else {
                 if(Stage.puyoCount === 0 && combinationCount > 0) {
                     // 全消しの処理をする
                     Stage.showZenkeshi();
+                    Score.addScore(3600);
                 }
                 combinationCount = 0;
                 // 消せなかったら、新しいぷよを登場させる
@@ -99,6 +104,14 @@ function loop() {
             Player.fix();
             // 固定したら、まず自由落下を確認する
             mode = 'checkFall'
+            break;
+        case 'gameOver':
+            // ばたんきゅーの準備をする
+            PuyoImage.prepareBatankyu(frame);
+            mode = 'batankyu';
+            break;
+        case 'batankyu':
+            PuyoImage.batankyu(frame);
             break;
     }
     frame++;

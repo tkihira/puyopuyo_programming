@@ -1,5 +1,6 @@
 class Stage {
     // static stageElement;
+    // static scoreElement;
     // static zenkeshiImage;
     // static board;
     // static puyoCount;
@@ -22,19 +23,26 @@ class Stage {
         this.zenkeshiImage = zenkeshiImage;
         stageElement.appendChild(zenkeshiImage);
 
+        const scoreElement = document.getElementById("score");
+        scoreElement.style.backgroundColor = Config.scoreBackgroundColor;
+        scoreElement.style.top = Config.puyoImgHeight * Config.stageRows + 'px';
+        scoreElement.style.width = Config.puyoImgWidth * Config.stageCols + 'px';
+        scoreElement.style.height = Config.fontHeight + "px";
+        this.scoreElement = scoreElement;
+
         // メモリを準備する
         this.board = [
-            [0, 0, 0, 0, 4, 5],
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0],
-            [0, 1, 2, 3, 0, 0],
-            [1, 2, 3, 4, 5, 0],
-            [1, 2, 3, 4, 5, 0],
-            [1, 2, 3, 4, 5, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
         ];
         let puyoCount = 0;
         for(let y = 0; y < Config.stageRows; y++) {
